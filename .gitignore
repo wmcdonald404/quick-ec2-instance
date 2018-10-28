@@ -1,0 +1,4 @@
+roles/*
+*.retry
+*.swp
+inventories/group_vars/all/vault/all.yml

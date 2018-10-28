@@ -32,7 +32,7 @@
         count_tag: "{{ ec2_instance_tag }}"
         exact_count: "{{ ec2_instance_count }}"
         groups: "{{ ec2_group }}"
-        key_name: "{{ ec2_key_name }}"
+        key_name: "{{ ec2_keypair }}"
         image: "{{ ec2_image }}"
         instance_tags: "{{ ec2_instance_tag }}"
         instance_type: "{{ ec2_instance_type }}"
