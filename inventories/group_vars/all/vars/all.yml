@@ -1,0 +1,14 @@
+---
+aws_access_key: "{{ vaulted_aws_access_key }}"
+aws_secret_key: "{{ vaulted_aws_secret_key }}"
+
+rhsm_username: "{{ vaulted_rhsm_username }}"
+rhsm_password: "{{ vaulted_rhsm_password }}"
+rhsm_pool_id: 8a85f98260c27fc50160c323263339ff
+
+ec2_url: https://ec2.amazonaws.com
+ec2_image: ami-7c491f05
+ec2_instance_type: t2.micro
+ec2_region: eu-west-1
+ec2_group: default
+ec2_internet_gateway: default-igw

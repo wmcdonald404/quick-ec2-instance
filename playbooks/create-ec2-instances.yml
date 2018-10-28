@@ -1,0 +1,55 @@
+# plays/create-ec2-instances.yml
+
+- name: create satellite instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ec2_instance_count: 1
+    ec2_instance_tag: 
+      name: satellite
+    ec2_instance_type: t3.large
+
+  tasks:
+    - name: gather facts from the ec2 virtual private cloud
+      ec2_vpc_net_facts:
+        filters:
+          isDefault: "true"
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_net_facts
+
+    - name: gather ec2 subnet facts
+      ec2_vpc_subnet_facts:
+        filters:
+          defaultForAz: "true"
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_subnet_facts
+    
+    - name: provision ec2 satellite instance
+      ec2:
+        assign_public_ip: yes
+        count_tag: "{{ ec2_instance_tag }}"
+        exact_count: "{{ ec2_instance_count }}"
+        groups: "{{ ec2_group }}"
+        key_name: "{{ ec2_key_name }}"
+        image: "{{ ec2_image }}"
+        instance_tags: "{{ ec2_instance_tag }}"
+        instance_type: "{{ ec2_instance_type }}"
+        region: "{{ ec2_region }}"
+        volumes:
+          - device_name: /dev/sda1
+            delete_on_termination: true
+            volume_type: gp2
+            volume_size: 250
+        vpc_subnet_id: "{{ ec2_vpc_subnet_facts.subnets[0].subnet_id }}"
+        wait: true
+      register: ec2
+
+    - name: satellite hostname
+      debug:
+        var: item.dns_name
+      loop: "{{ ec2.tagged_instances }}"
+
+# vim:sw=2:ts=2:et
+

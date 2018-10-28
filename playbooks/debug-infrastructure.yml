@@ -1,0 +1,73 @@
+---
+# plays/destroy-vpc.yml
+# simple demo play destroying the single, tagged VPC
+
+- name: debug a virtual private cloud
+  connection: local
+  gather_facts: false
+  hosts: localhost
+
+  tasks:
+    - name: gather facts from the ec2 virtual private cloud
+      ec2_vpc_net_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_net_facts
+      tags:
+        - vpc
+
+    - name: gather ec2 subnet facts
+      ec2_vpc_subnet_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_subnet_facts
+
+    - name: gather ec2 security group facts
+      ec2_group_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_group_facts
+
+    - name: gather facts from the ec2 virtual private cloud internet gateway
+      ec2_vpc_igw_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_igw_facts
+
+    - name: gather facts from the ec2 virtual private cloud route tables
+      ec2_vpc_route_table_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_route_table_facts
+
+    - name: debug the gathered ec2 virtual private cloud facts
+      debug:
+        var: ec2_vpc_net_facts
+      tags:
+        - debug
+        - vpc
+
+    - name: debug ec2_vpc_subnet_facts
+      debug:
+        var: ec2_vpc_subnet_facts
+      tags:
+        - debug
+        - subnet
+
+    - name: debug ec2_group data structure
+      debug:
+        var: ec2_group_facts
+      tags:
+        - debug
+        - group
+
+    - name: debug ec2_igw data structure
+      debug:
+        var: ec2_vpc_igw_facts
+      tags:
+        - debug
+        - gateway
+
+    - name: debug ec2_route_table data structure
+      debug:
+        var: ec2_vpc_route_table_facts
+      tags:
+        - debug
+        - route
+
+# vim:sw=2:ts=2:et

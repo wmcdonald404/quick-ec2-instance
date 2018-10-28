@@ -1,0 +1,20 @@
+# plays/destroy-ec2-instances.yml
+#
+# Destroy the EC2 instance
+
+- name: destroy satellite instance
+  hosts: tag_name_satellite
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: destroy ec2 satellite instances
+      ec2:
+        instance_id: "{{ hostvars[inventory_hostname].ec2_id }}"
+        region: "{{ ec2_region }}"
+        state: absent
+      register: ec2
+
+# vim:sw=2:ts=2:et
+
+

@@ -1,0 +1,108 @@
+---
+# plays/create-specific-infrastructure.yml
+# 
+# This playbook will explicitly create AWS VPC elements.
+#
+# Compare with plays/create-default-infrastructure.yml which simply
+# checks for a default VPC and creates if necessary.
+#
+#
+# The following tagged AWS virtual private cloud components are created:
+#
+# - virtual private cloud
+# - subnets
+# - security group
+# - internet gateway
+# - routing table
+
+- name: create a virtual private cloud
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    product_prefix: satellite
+
+  tasks:
+   - name: create ec2 virtual private cloud
+     ec2_vpc_net:
+       cidr_block: 10.0.0.0/16
+       name: "{{ product_prefix }}-demo-vpc"
+       region: "{{ ec2_region }}"
+       tags: "{{ ec2_vpc_tags }}"
+       tenancy: default
+     register: ec2_vpc_net
+     tags:
+       - vpc
+       - create
+
+   - name: create ec2 virtual private cloud subnets for eu-west-1{a,b,c}
+     ec2_vpc_subnet:
+       az: "{{ item.az }}"
+       cidr: "{{ item.subnet }}"
+       region: "{{ ec2_region }}"
+       tags: "{{ ec2_subnet_tags }}"
+       vpc_id: "{{ ec2_vpc_net.vpc.id }}"
+     register: ec2_subnets
+     tags:
+       - subnet
+       - create
+     with_items:
+       - { az: 'eu-west-1a', subnet: '10.0.1.0/24' }
+       - { az: 'eu-west-1b', subnet: '10.0.2.0/24' }
+       - { az: 'eu-west-1c', subnet: '10.0.3.0/24' }
+
+   - name: gather facts from the ec2 virtual private cloud route tables
+     ec2_vpc_route_table_facts:
+       filters:
+         vpc-id: "{{ ec2_vpc_net.vpc.id }}"
+       region: "{{ ec2_region }}"
+     register: ec2_vpc_route_table_facts
+
+   - name: create ec2 virtual private cloud security group
+     ec2_group:
+       description: demonstration security group
+       name: "{{ ec2_group }}"
+       region: "{{ ec2_region }}"
+       rules:
+         - proto: tcp
+           ports: 
+           - 22
+           cidr_ip: 0.0.0.0/0
+           rule_desc: allow-ssh
+       tags: "{{ ec2_group_tags }}"
+       vpc_id: "{{ ec2_vpc_net.vpc.id }}"
+     register: ec2_group
+     tags:
+       - security_group
+       - create
+
+   - name: create ec2 virtual private cloud internet gateway
+     ec2_vpc_igw:
+       region: "{{ ec2_region }}"
+       tags: "{{ ec2_igw_tags }}"
+       vpc_id: "{{ ec2_vpc_net.vpc.id }}"
+     register: ec2_internet_gateway
+     tags:
+       - internet_gateway
+       - create
+
+   - name: create ec2 virtual private cloud routing table
+     ec2_vpc_route_table:
+       region: "{{ ec2_region }}"
+       route_table_id: "{{ ec2_vpc_route_table_facts.route_tables[0].id }}"
+       routes:
+         - dest: 0.0.0.0/0
+           gateway_id: "{{ ec2_internet_gateway.gateway_id }}"
+       subnets:
+         - 10.0.1.0/24
+         - 10.0.2.0/24
+         - 10.0.3.0/24
+       tags: "{{ ec2_route_tags }}"
+       vpc_id: "{{ ec2_vpc_net.vpc.id }}"
+     register: ec2_route_table
+     tags:
+       - route_table
+       - create
+
+# vim:sw=2:ts=2:et

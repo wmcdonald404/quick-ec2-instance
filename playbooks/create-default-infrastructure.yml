@@ -1,0 +1,46 @@
+---
+# plays/create-default-infrastructure.yml
+# 
+# Create a default AWS VPS if one does not exist.
+#
+# See plays/create-specific-infrastructure.yml for comparison.
+
+- name: create a virtual private cloud
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: install the awscli on the control node
+      package:
+        name: awscli
+        state: present
+      become: true
+
+    - name: create a config directory for awscli
+      file:
+        path: ~/.aws/
+        state: directory
+        mode: 0700
+
+    - name: configure defaults for awscli from group_vars
+      template:
+        src: "{{ item }}.j2"
+        dest: "~/.aws/{{ item }}"
+        mode: 0600
+      with_items:
+        - config
+        - credentials
+
+    - name: gather facts from the ec2 virtual private cloud
+      ec2_vpc_net_facts:
+        region: "{{ ec2_region }}"
+      register: ec2_vpc_net_facts
+
+      # - debug: msg={{ ec2_vpc_net_facts.vpcs | selectattr("is_default", "equalto", true) | list | length == 0 }}
+
+    - name: create a default vpc if one does not exist
+      command: aws ec2 create-default-vpc
+      when: ec2_vpc_net_facts.vpcs | selectattr("is_default", "equalto", true) | list | length == 0
+
+# vim:sw=2:ts=2:et
