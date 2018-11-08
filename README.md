@@ -51,14 +51,11 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 
 ## Variables
 
-- `rhsm_pool_id`: Red Hat subscription manager pool ID with available Satellite subscription (unused)
 - `ec2_image`: EC2 AMI image ID to provision (default ami-7c491f05, Red Hat Enterprise Linux (RHEL) 7.1 (HVM)_
 - `ec2_region`: AWS region to create VPC/provision instances (default: eu-west-1)
 - `vaulted_aws_access_key`: AWS Access key ID (https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 - `vaulted_aws_secret_key`: AWS Secret Access Key (as above)
 - `vaulted_ec2_keypair`: AWS EC2 keypair (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
-- `vaulted_rhsm_username`: RHSM username (unused, defined in iac-satellite)
-- `vaulted_rhsm_password`: RHSM password (unused, defined in iac-satellite)
 
 ## Steps
 1. Clone the repository
@@ -72,18 +69,6 @@ Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml is 
 
 ```
 $ mkdir ~/quick-satellite/all/{vars,vault}/all.yml
-
-$ cat > ~/quick-satellite/inventories/group_vars/all/vars/all.yml <<EOF
----
-aws_access_key: "{{ vaulted_aws_access_key }}"
-aws_secret_key: "{{ vaulted_aws_secret_key }}"
-ec2_keypair: "{{ vaulted_ec2_keypair }}"
-
-ec2_url: https://ec2.amazonaws.com
-ec2_image: ami-c90195b0
-ec2_instance_type: t2.micro
-ec2_region: eu-west-1
-EOF
 
 $ ansible-vault create ~/quick-satellite/all/vault/all.yml
 $ ansible-vault edit ~/quick-satellite/all/vault/all.yml

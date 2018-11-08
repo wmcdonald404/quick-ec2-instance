@@ -3,9 +3,6 @@ aws_access_key: "{{ vaulted_aws_access_key }}"
 aws_secret_key: "{{ vaulted_aws_secret_key }}"
 ec2_keypair: "{{ vaulted_ec2_keypair }}"
 
-rhsm_username: "{{ vaulted_rhsm_username }}"
-rhsm_password: "{{ vaulted_rhsm_password }}"
-
 ec2_url: https://ec2.amazonaws.com
 ec2_image: ami-7c491f05
 ec2_instance_type: t2.micro
