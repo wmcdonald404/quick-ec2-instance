@@ -68,7 +68,7 @@ $ git clone git@github.com:wmcdonald404/satellite-simple-install.git ~/quick-sat
 Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml is effectively a layer of redirection so that there is a plain-text copy of the variable name to aid troubleshooting/tracing.
 
 ```
-$ mkdir ~/quick-satellite/all/{vars,vault}/all.yml
+$ mkdir -p ~/quick-satellite/all/{vars,vault}
 
 $ ansible-vault create ~/quick-satellite/all/vault/all.yml
 $ ansible-vault edit ~/quick-satellite/all/vault/all.yml
