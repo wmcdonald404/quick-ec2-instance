@@ -18,6 +18,7 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 ## Contents
 
 ```
+.
 ├── ansible.cfg
 ├── inventories
 │   ├── aws
@@ -29,11 +30,14 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 │           └── vault
 │               └── all.yml
 ├── playbooks
+│   ├── create-arm-ec2-instances.yml
 │   ├── create-default-infrastructure.yml
 │   ├── create-ec2-instances.yml
 │   ├── create-specific-infrastructure.yml
+│   ├── create-x86-ec2-instances.yml
 │   ├── debug-infrastructure.yml
 │   ├── destroy-ec2-instances.yml
+│   ├── prep-cluster-nodes.yml
 │   └── templates
 │       ├── config.j2
 │       └── credentials.j2
@@ -45,13 +49,14 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 - `inventories/group_vars/all/vault/all.yml`: sensitive inventory group vars for AWS and RHSM
 - `playbooks/create-default-infrastructure.yml`: idempotently create a default AWS VPC 
 - `playbooks/create-specific-infrastructure.yml`: idempotently create specific VPN with explicit subnets, security groups, internet gateways and routing tables
-- `playbooks/create-ec2-instances.yml`: create the Satellite EC2 instance
-- `playbooks/destroy-ec2-instances.yml`: destroy the Satellite EC2 instance
+- `playbooks/create-x86-ec2-instances.yml`: create x86_64 EC2 instance(s)
+- `playbooks/create-arm-ec2-instances.yml`: create arm EC2 instance(s)
+- `playbooks/destroy-ec2-instances.yml`: destroy the EC2 instance(s)
 - `playbooks/debug-infrastructure.yml`: debug output from VPC facts
 
 ## Variables
 
-- `ec2_image`: EC2 AMI image ID to provision (default ami-7c491f05, Red Hat Enterprise Linux (RHEL) 7.1 (HVM)_
+- `ec2_x86_image`: EC2 x86 AMI image ID to provision (default ami-0e12cbde3e77cbb98) 
 - `ec2_region`: AWS region to create VPC/provision instances (default: eu-west-1)
 - `vaulted_aws_access_key`: AWS Access key ID (https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 - `vaulted_aws_secret_key`: AWS Secret Access Key (as above)
@@ -81,20 +86,25 @@ vaulted_ec2_key_pair: <key_pair>
 ```
 vi ~/.vault_pass
 ```
-4. Create AWS default VPC infrastructure
+4. export environment variables required for the AWS dynamic inventory script
+```
+export AWS_ACCESS_KEY_ID=<access_key_id>
+export AWS_SECRET_ACCESS_KEY=<secret_access_key>
+```
+5. Create AWS default VPC infrastructure
 ```
 $ cd ~/quick-satellite
 $ ansible-playbook ~/quick-satellite/playbooks/create-default-infrastructure.yml
 ```
-5. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)
+6. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)
 ```
 $ ~/quick-satellite/inventories/aws --refresh-cache
 ```
-6. Create EC2 Satellite instance
+7. Create EC2 Satellite instance
 ```
 $ cd ~/quick-satellite
-$ ansible-playbook ~/quick-satellite/playbooks/create-ec2-instances.yml
+$ ansible-playbook ~/quick-satellite/playbooks/create-x86-ec2-instances.yml
 ```
-7. Note the item.dns_name value
+8. Note the item.dns_name value
 
-8. Progress to https://github.com/sean797/iac-satellite
+9. Progress to https://github.com/sean797/iac-satellite

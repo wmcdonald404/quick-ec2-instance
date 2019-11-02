@@ -2,10 +2,19 @@
 aws_access_key: "{{ vaulted_aws_access_key }}"
 aws_secret_key: "{{ vaulted_aws_secret_key }}"
 ec2_keypair: "{{ vaulted_ec2_keypair }}"
-
 ec2_url: https://ec2.amazonaws.com
-ec2_image: ami-7c491f05
-ec2_instance_type: t2.micro
+ec2_x86_image: ami-0e12cbde3e77cbb98
+ec2_x86_instance_type: t2.micro
+ec2_arm_image: ami-0b5171a7b859ff1b4
+ec2_arm_instance_type: a1.medium
 ec2_region: eu-west-1
 ec2_group: default
 ec2_internet_gateway: default-igw
+ec2_instance_count: 1
+ec2_instance_tag: 
+  name: satellite
+
+ec2_image: "{{ ec2_x86_image }}"
+ec2_instance_type: "{{ ec2_x86_instance_type }}"
+
+

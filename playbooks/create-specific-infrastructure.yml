@@ -6,7 +6,6 @@
 # Compare with plays/create-default-infrastructure.yml which simply
 # checks for a default VPC and creates if necessary.
 #
-#
 # The following tagged AWS virtual private cloud components are created:
 #
 # - virtual private cloud
@@ -24,6 +23,33 @@
     product_prefix: satellite
 
   tasks:
+   - name: install the python-boto on the control node
+      package:
+        name: python3-boto
+        state: present
+      become: true
+
+    - name: install the awscli on the control node
+      package:
+        name: awscli
+        state: present
+      become: true
+
+    - name: create a config directory for awscli
+      file:
+        path: ~/.aws/
+        state: directory
+        mode: 0700
+
+    - name: configure defaults for awscli from group_vars
+      template:
+        src: "{{ item }}.j2"
+        dest: "~/.aws/{{ item }}"
+        mode: 0600
+      with_items:
+        - config
+        - credentials
+
    - name: create ec2 virtual private cloud
      ec2_vpc_net:
        cidr_block: 10.0.0.0/16
