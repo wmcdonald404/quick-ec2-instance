@@ -3,7 +3,7 @@
 # Destroy the EC2 instance
 
 - name: destroy ec2 instances
-  hosts: tag_name_pacemaker
+  hosts: tag_name_satellite
   connection: local
   gather_facts: false
 

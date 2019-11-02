@@ -2,18 +2,11 @@
 
 This project is intended to act as a simple example of spinning up an AWS instance, in preparation for additional automation, for example to deploy Satellite, Openshift, Pacemaker or similar.
 
-The instructions and playbooks in this repository will:
-
+The instructions and playbooks in this repository:
 - Configure some AWS credentials in the Ansible Vault
 - Prepare the shell environment for the AWS dynamic inventory script
-- Create a default VPC if one does not already exist (examples for specific VPC creation are included too)
-- Create an appropriately sized instance (the file system layout is kept deliberately simple, for product deployments in anger refer to the documentation)
-
-Once the VPC and instance are provisioned https://github.com/sean797/iac-satellite can be used to deploy the Satellite. The playbooks in that repository will:
-
-- Subscribe the host appropriately
-- Install Satellite
-- Optionally: create some standard Satellite objects (products, content views, activation keys etc.)
+- Create a default VPC if one does not already exist (examples for specific VPC creation are included too where explicitly defined subnets, security groups, internet gateways, routing tables or similar are required.)
+- Create an appropriately sized instance (the file system layout is kept deliberately simple, for production deployments refer to the corresponding documentation)
 
 ## Contents
 
@@ -113,4 +106,11 @@ $ cd ~/quick-ec2-instance
 $ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml
 ```
 9. Note the item.dns_name value
+
+## Further Steps
+Once a VPC and instance(s) are provisioned further automation, for example https://github.com/sean797/iac-satellite, may be used to deploy Satellite. The playbooks in that repository will:
+
+- Subscribe the host appropriately
+- Install Satellite
+- Optionally: create some standard Satellite objects (products, content views, activation keys etc.)
 
