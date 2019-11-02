@@ -1,6 +1,6 @@
-# quick-satellite
+# quick-ec2-instance
 
-This project is intended to act as a simple example of spinning up an AWS instance in preparation for Satellite installation.
+This project is intended to act as a simple example of spinning up an AWS instance, in preparation for additional automation, for example to deploy Satellite, Openshift, Pacemaker or similar.
 
 The instructions and playbooks in this repository will:
 
@@ -64,7 +64,7 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 ## Steps
 1. Clone the repository
 ```
-$ git clone git@github.com:wmcdonald404/satellite-simple-install.git ~/quick-satellite/
+$ git clone git@github.com:wmcdonald404/quick-ec2-instance.git ~/quick-ec2-instance/
 ```
 
 2. Define your AWS access_key, secret_key and keypair variables in a vault file
@@ -72,10 +72,10 @@ $ git clone git@github.com:wmcdonald404/satellite-simple-install.git ~/quick-sat
 Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml is effectively a layer of redirection so that there is a plain-text copy of the variable name to aid troubleshooting/tracing.
 
 ```
-$ mkdir -p ~/quick-satellite/inventories/group_vars/all/{vars,vault}
+$ mkdir -p ~/quick-ec2-instance/inventories/group_vars/all/{vars,vault}
 
-$ ansible-vault create ~/quick-satellite/inventories/group_vars/all/vault/all.yml
-$ ansible-vault edit ~/quick-satellite/inventories/group_vars/all/vault/all.yml
+$ ansible-vault create ~/quick-ec2-instance/inventories/group_vars/all/vault/all.yml
+$ ansible-vault edit ~/quick-ec2-instance/inventories/group_vars/all/vault/all.yml
 
 vaulted_aws_access_key: <access_key>
 vaulted_aws_secret_key: <secret_key>
@@ -85,24 +85,33 @@ vaulted_ec2_key_pair: <key_pair_name>
 ```
 vi ~/.vault_pass
 ```
-4. export environment variables required for the AWS dynamic inventory script
+4. Export environment variables required for the AWS dynamic inventory script
 ```
 export AWS_ACCESS_KEY_ID=<access_key_id>
 export AWS_SECRET_ACCESS_KEY=<secret_access_key>
 ```
+5. Set appropriate variables for instance_count and instance_tag:
+```
+$ vi ~/quick-ec2-instance/inventories/group_vars/all/vars/all.yml 
+
+ec2_instance_count: 1
+ec2_instance_tag:
+  name: satellite
+```
+
 5. Create AWS default VPC infrastructure
 ```
-$ cd ~/quick-satellite
-$ ansible-playbook ~/quick-satellite/playbooks/create-default-infrastructure.yml
+$ cd ~/quick-ec2-instance
+$ ansible-playbook ~/quick-ec2-instance/playbooks/create-default-infrastructure.yml
 ```
 6. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)
 ```
-$ ~/quick-satellite/inventories/aws --refresh-cache
+$ ~/quick-ec2-instance/inventories/aws --refresh-cache
 ```
 7. Create EC2 Satellite instance
 ```
-$ cd ~/quick-satellite
-$ ansible-playbook ~/quick-satellite/playbooks/create-x86-ec2-instances.yml
+$ cd ~/quick-ec2-instance
+$ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml
 ```
 8. Note the item.dns_name value
 

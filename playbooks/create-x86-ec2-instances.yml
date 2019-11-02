@@ -6,10 +6,6 @@
   gather_facts: false
 
   vars:
-    ec2_instance_count: 1
-    ec2_instance_tag: 
-      name: satellite
-    ec2_instance_type: t2.micro
 
   tasks:
     - name: gather facts from the ec2 virtual private cloud
@@ -26,7 +22,7 @@
         region: "{{ ec2_region }}"
       register: ec2_vpc_subnet_facts
     
-    - name: provision ec2 sandbox instances
+    - name: provision ec2 sandbox instance(s)
       ec2:
         assign_public_ip: yes
         count_tag: "{{ ec2_instance_tag }}"
@@ -50,7 +46,7 @@
         wait: true
       register: ec2
 
-    - name: sandbox instance hostnames
+    - name: sandbox instance hostname(s)
       debug:
         var: item.dns_name
       loop: "{{ ec2.tagged_instances }}"
