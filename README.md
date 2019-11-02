@@ -66,7 +66,6 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 ```
 $ git clone git@github.com:wmcdonald404/quick-ec2-instance.git ~/quick-ec2-instance/
 ```
-
 2. Define your AWS access_key, secret_key and keypair variables in a vault file
 
 Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml is effectively a layer of redirection so that there is a plain-text copy of the variable name to aid troubleshooting/tracing.
@@ -99,20 +98,19 @@ ec2_instance_tag:
   name: satellite
 ```
 
-5. Create AWS default VPC infrastructure
+6. Create AWS default VPC infrastructure
 ```
 $ cd ~/quick-ec2-instance
 $ ansible-playbook ~/quick-ec2-instance/playbooks/create-default-infrastructure.yml
 ```
-6. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)
+7. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)
 ```
 $ ~/quick-ec2-instance/inventories/aws --refresh-cache
 ```
-7. Create EC2 Satellite instance
+8. Create EC2 Satellite instance
 ```
 $ cd ~/quick-ec2-instance
 $ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml
 ```
-8. Note the item.dns_name value
+9. Note the item.dns_name value
 
-9. Progress to https://github.com/sean797/iac-satellite
