@@ -1,13 +1,13 @@
 # quick-satellite
 
-This project is intended to act as a simple example of spinning up a Red Hat Satellite 6 instance on AWS.
+This project is intended to act as a simple example of spinning up an AWS instance in preparation for Satellite installation.
 
-This playbooks in this repository will:
+The instructions and playbooks in this repository will:
 
 - Configure some AWS credentials in the Ansible Vault
+- Prepare the shell environment for the AWS dynamic inventory script
 - Create a default VPC if one does not already exist (examples for specific VPC creation are included too)
 - Create an appropriately sized instance (the file system layout is kept deliberately simple, for product deployments in anger refer to the documentation)
-- Prepare an instance for a Satellite install
 
 Once the VPC and instance are provisioned https://github.com/sean797/iac-satellite can be used to deploy the Satellite. The playbooks in that repository will:
 
@@ -37,7 +37,6 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 │   ├── create-x86-ec2-instances.yml
 │   ├── debug-infrastructure.yml
 │   ├── destroy-ec2-instances.yml
-│   ├── prep-cluster-nodes.yml
 │   └── templates
 │       ├── config.j2
 │       └── credentials.j2
@@ -56,7 +55,7 @@ Once the VPC and instance are provisioned https://github.com/sean797/iac-satelli
 
 ## Variables
 
-- `ec2_x86_image`: EC2 x86 AMI image ID to provision (default ami-0e12cbde3e77cbb98) 
+- `ec2_x86_image`: AMI image ID to provision EC2 instances from (default ami-0e12cbde3e77cbb98) 
 - `ec2_region`: AWS region to create VPC/provision instances (default: eu-west-1)
 - `vaulted_aws_access_key`: AWS Access key ID (https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 - `vaulted_aws_secret_key`: AWS Secret Access Key (as above)
@@ -80,7 +79,7 @@ $ ansible-vault edit ~/quick-satellite/inventories/group_vars/all/vault/all.yml
 
 vaulted_aws_access_key: <access_key>
 vaulted_aws_secret_key: <secret_key>
-vaulted_ec2_key_pair: <key_pair>
+vaulted_ec2_key_pair: <key_pair_name>
 ```
 3. Optionally, create a vault_pass file (nb: never check this into SCM)
 ```
