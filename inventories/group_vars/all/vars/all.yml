@@ -12,7 +12,7 @@ ec2_group: default
 ec2_internet_gateway: default-igw
 ec2_instance_count: 1
 ec2_instance_tag: 
-  name: satellite
+  name: demo
 
 ec2_image: "{{ ec2_x86_image }}"
 ec2_instance_type: "{{ ec2_x86_instance_type }}"

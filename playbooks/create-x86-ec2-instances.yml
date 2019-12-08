@@ -1,4 +1,4 @@
-# plays/create-x86-ec2-instances.yml
+# playbooks/create-x86-ec2-instances.yml
 
 - name: create sandbox instances
   hosts: localhost

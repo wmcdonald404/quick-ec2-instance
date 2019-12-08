@@ -3,14 +3,15 @@
 # Destroy the EC2 instance
 
 - name: destroy ec2 instances
-  hosts: tag_name_satellite
+  hosts: all
   connection: local
   gather_facts: false
 
   tasks:
     - name: destroy ec2 instances
       ec2:
-        instance_id: "{{ hostvars[inventory_hostname].ec2_id }}"
+        count_tag: "{{ ec2_instance_tag }}"
+        instance_ids: "{{ hostvars[inventory_hostname].ec2_id }}"
         region: "{{ ec2_region }}"
         state: absent
       register: ec2
