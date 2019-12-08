@@ -100,17 +100,19 @@ $ ansible-playbook ~/quick-ec2-instance/playbooks/create-default-infrastructure.
 ```
 $ ~/quick-ec2-instance/inventories/aws --refresh-cache
 ```
-8. Create EC2 Satellite instance
+8. Create EC2 instance
 ```
 $ cd ~/quick-ec2-instance
 $ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml
 ```
 9. Note the item.dns_name value
 
-## Further Steps
-Once a VPC and instance(s) are provisioned further automation, for example https://github.com/sean797/iac-satellite, may be used to deploy Satellite. The playbooks in that repository will:
-
-- Subscribe the host appropriately
-- Install Satellite
-- Optionally: create some standard Satellite objects (products, content views, activation keys etc.)
-
+## Variations
+The instance tag name can be defined on-the-fly on the command line using JSON-formatted extra variables to override inventory variables as illustrated below:
+```
+$ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml -e '{ "ec2_instance_tag": { "name": "mytagname" } }'
+```
+Similarly, the number of instances to be provisioned can be altered on-the-fly as shown here:
+```
+$ ansible-playbook ~/quick-ec2-instance/playbooks/create-x86-ec2-instances.yml -e 'ec2_instance_count=4'
+```
