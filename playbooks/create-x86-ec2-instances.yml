@@ -9,18 +9,18 @@
 
   tasks:
     - name: gather facts from the ec2 virtual private cloud
-      ec2_vpc_net_facts:
+      ec2_vpc_net_info:
         filters:
           isDefault: "true"
         region: "{{ ec2_region }}"
-      register: ec2_vpc_net_facts
+      register: ec2_vpc_net_info
 
     - name: gather ec2 subnet facts
-      ec2_vpc_subnet_facts:
+      ec2_vpc_subnet_info:
         filters:
           defaultForAz: "true"
         region: "{{ ec2_region }}"
-      register: ec2_vpc_subnet_facts
+      register: ec2_vpc_subnet_info
     
     - name: provision ec2 sandbox instance(s)
       ec2:
@@ -37,12 +37,12 @@
           - device_name: /dev/sda1
             delete_on_termination: true
             volume_type: gp2
-            volume_size: 20
-          - device_name: /dev/sdb
-            delete_on_termination: true
-            volume_type: gp2
-            volume_size: 10
-        vpc_subnet_id: "{{ ec2_vpc_subnet_facts.subnets[0].subnet_id }}"
+            volume_size: 60
+            # - device_name: /dev/sdb
+            #   delete_on_termination: true
+            #   volume_type: gp2
+            #   volume_size: 10
+        vpc_subnet_id: "{{ ec2_vpc_subnet_info.subnets[0].subnet_id }}"
         wait: true
       register: ec2
 

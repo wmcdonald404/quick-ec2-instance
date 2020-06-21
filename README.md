@@ -71,7 +71,7 @@ $ ansible-vault edit ~/quick-ec2-instance/inventories/group_vars/all/vault/all.y
 
 vaulted_aws_access_key: <access_key>
 vaulted_aws_secret_key: <secret_key>
-vaulted_ec2_key_pair: <key_pair_name>
+vaulted_ec2_keypair: <key_pair_name>
 ```
 3. Optionally, create a vault-pass file (nb: never check this into SCM)
 ```
