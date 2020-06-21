@@ -73,9 +73,9 @@ vaulted_aws_access_key: <access_key>
 vaulted_aws_secret_key: <secret_key>
 vaulted_ec2_key_pair: <key_pair_name>
 ```
-3. Optionally, create a vault_pass file (nb: never check this into SCM)
+3. Optionally, create a vault-pass file (nb: never check this into SCM)
 ```
-vi ~/.vault_pass
+vi ~/.vault-pass
 ```
 4. Export environment variables required for the AWS dynamic inventory script
 ```
