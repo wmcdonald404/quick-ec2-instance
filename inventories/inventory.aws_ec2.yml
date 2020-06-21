@@ -1,0 +1,6 @@
+# inventory.aws_ec2.yml
+plugin: aws_ec2
+regions:
+  - eu-west-1
+
+# vim:sw=2:ts=2:et
