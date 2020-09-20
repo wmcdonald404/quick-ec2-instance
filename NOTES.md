@@ -1,11 +1,11 @@
-== Overview ==
+## Overview
 Testing on EL8 illustrates that there's no easily accesible boto2. Boto2 is required for the AWS modules. So we need to resort to pip. :(
 
 The following steps illustrate one method to get Boto2 and its dependencies prepped in a relatively clean, isolated fashion.
 
 The initial plan was to try and use the EPEL python3-tox and keep things packaged as much as possible. The EPEL python3-tox appears to be quite old and doesn't have --devenv to create portable venvs. As an alternative, we can create a manual venv, pip-install tox into this, then bootstrap the rest of the venvs.
 
-== High-level Steps ==
+## High-level Steps
 1. Create a clean rhel8 ec2 instance.
 2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
 3. Create a venv.
@@ -14,7 +14,7 @@ The initial plan was to try and use the EPEL python3-tox and keep things package
 6. Register the machine with Red Hat Subscription Manager
 7. Install Ansible Engine
 
-== Detailed-level Steps ==
+## Detailed-level Steps
 1. Create a clean rhel8 ec2 instance.
 2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
 
