@@ -22,9 +22,9 @@ The initial plan was to try and use the EPEL python3-tox and keep things package
 
 3. Create and activate a venv.
 
-`$ python3 -m venv .tox-venv`
-`$ . .tox-venv/bin/activate`
-`(.tox-venv) $ `
+```$ python3 -m venv .tox-venv
+$ . .tox-venv/bin/activate
+(.tox-venv) $ ```
 
 4. Pip install tox.
 
@@ -36,12 +36,14 @@ The initial plan was to try and use the EPEL python3-tox and keep things package
 
 6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
 
-```# subscription-manager register
+```
+# subscription-manager register
 Registering to: subscription.rhsm.redhat.com:443/subscription
 Username: <username>
 Password: <password>
 # subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
-# subscription-manager attach --pool=<pool-id>```
+# subscription-manager attach --pool=<pool-id>
+```
 
 7. Install Ansible Engine
 
