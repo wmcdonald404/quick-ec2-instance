@@ -17,33 +17,24 @@ The initial plan was to try and use the EPEL python3-tox and keep things package
 ## Detailed-level Steps
 1. Create a clean rhel8 ec2 instance.
 2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-
 ```
 # yum -y install python3 python3-virtualenv python3-devel git gcc
 ```
-
-3. Create and activate a venv.
-
+3. Create and `activate` a venv.
 ```
 $ python3 -m venv .tox-venv
 $ . .tox-venv/bin/activate
 (.tox-venv) $ 
 ```
-
-4. Pip install tox.
-
+4. Pip install tox. Note this is installing into the `active` venv.
 ```
 (.tox-venv) $ pip install tox
 ```
-
 5. Bootstrap the tox environment.
-
 ```
 $ git clone https://github.com/lshake/bootstrap_ansible
 ```
-
 6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
-
 ```
 # subscription-manager register
 Registering to: subscription.rhsm.redhat.com:443/subscription
@@ -52,10 +43,8 @@ Password: <password>
 # subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
 # subscription-manager attach --pool=<pool-id>
 ```
-
 7. Install Ansible Engine
-
-````
+```
 # subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
 ```
 
