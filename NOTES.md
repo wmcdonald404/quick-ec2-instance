@@ -1,5 +1,10 @@
+## What the What?
+I have some old, crappy Ansible code that I occasionally use to quickly throw up an EC2 instance to test stuff. It's lightly used, rarely maintained and frequently breaks if I run it from somewhere other than where I know it'll already work. Typically due to Boto or AWS CLI or something that's understably changed between 2018 and 2020 or RHEL 7, Fedora 32 or RHEL 8.
+
+This is an effort to try and decouple some of the Ansible code (which will still be basic AF) from its external dependencies without horribly polluting a nicely packaged Python install.
+
 ## Overview
-Testing on EL8 illustrates that there's no easily accesible boto2. Boto2 is required for the AWS modules. So we need to resort to pip. :(
+Testing on EL8 illustrates that there's no easily accesible boto2. Boto2 is required for the AWS modules. So we need to resort to pip. :( Installed unpackaged things on a packaged distribution makes my innder-sysadmin sad.
 
 The following steps illustrate one method to get Boto2 and its dependencies prepped in a relatively clean, isolated fashion.
 
@@ -8,17 +13,30 @@ The initial plan was to try and use the EPEL python3-tox and keep things package
 ## High-level Steps
 1. Create a clean rhel8 ec2 instance.
 2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-3. Create a venv.
-4. Pip install tox.
-5. Bootstrap the tox environment.
-6. Register the machine with Red Hat Subscription Manager
-7. Install Ansible Engine
+3. Register the machine with Red Hat Subscription Manager
+4. Install Ansible Engine
+5. Create a venv.
+6. Pip install tox.
+7. Bootstrap the tox environment.
 
 ## Detailed-level Steps
 1. Create a clean rhel8 ec2 instance.
 2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
 ```
 # yum -y install python3 python3-virtualenv python3-devel git gcc
+```
+6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
+```
+# subscription-manager register
+Registering to: subscription.rhsm.redhat.com:443/subscription
+Username: <username>
+Password: <password>
+# subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
+# subscription-manager attach --pool=<pool-id>
+```
+7. Install Ansible Engine
+```
+# subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
 ```
 3. Create and `activate` a venv.
 ```
@@ -34,24 +52,21 @@ $ . .tox-venv/bin/activate
 ```
 $ git clone https://github.com/lshake/bootstrap_ansible
 ```
-6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
-```
-# subscription-manager register
-Registering to: subscription.rhsm.redhat.com:443/subscription
-Username: <username>
-Password: <password>
-# subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
-# subscription-manager attach --pool=<pool-id>
-```
-7. Install Ansible Engine
-```
-# subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+8. Build the Tox testing venvs
 ```
 
-<< DOSTUFF >>
+9. Create the Python venv(s)
 
+10. Export a portable venv
+
+
+
+99. Exit the venv.
 $ deactivate
 
+
+## Notes / Follow-up
+RHEL8: python 3.6.8 & ansible 2.9
 
 
 TODO:
@@ -64,7 +79,7 @@ TODO:
   py27-ansible29
   py3-ansible27
   py3-ansible28
-  py3-ansible29
+  py3-ansible29 # rhel8 base
 
   ... is there value in having env lists / requirements which match:
   rhel7 base ansible + python2
@@ -85,25 +100,4 @@ deps =
   py3
   ansible29
 
-
-== Old Steps ==
-
-# 1. Install/enable EPEL (https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm)
-# 2. Install python3-tox (https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/python3-tox-3.4.0-1.el8.noarch.rpm or later)
-# 3. Install Git
-# 4. Clone Lee's Ansible bootstrap (https://github.com/lshake/bootstrap_ansible)
-# 5. Set up a Python virtual environment (venv)
-
-
-1. Install/enable EPEL
-`# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm`
-
-2. Install python3-tox
-`#  yum -y install python3-tox`
-
-3. Install Git
-`# yum -y install git`
-
-4. Clone Lee's Ansible bootstrap
-`$ git clone https://github.com/lshake/bootstrap_ansible
-
+## Notes / Foll
