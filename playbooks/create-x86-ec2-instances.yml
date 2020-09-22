@@ -8,6 +8,21 @@
   vars:
 
   tasks:
+    - name: create a config directory for awscli
+      file:
+        path: ~/.aws/
+        state: directory
+        mode: 0700
+
+    - name: configure defaults for awscli from group_vars
+      template:
+        src: "{{ item }}.j2"
+        dest: "~/.aws/{{ item }}"
+        mode: 0600
+      with_items:
+        - config
+        - credentials
+
     - name: gather facts from the ec2 virtual private cloud
       ec2_vpc_net_info:
         filters:
