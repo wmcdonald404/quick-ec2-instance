@@ -4,7 +4,7 @@
 $ python3 -m venv .tox-venv
 $ . .tox-venv/bin/activate
 (.tox-venv) $ pip install tox
-(.tox-venv) $ git clone https://github.com/lshake/bootstrap_ansible
+(.tox-venv) $ git clone git@github.com:wmcdonald404/bootstrap_ansible.git
 (.tox-venv) $ ./bootstrap_ansible/build.sh
 (.tox-venv) $ deactivate
 
@@ -12,7 +12,26 @@ $ . .tox-venv/bin/activate
 # subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
 # subscription-manager attach --pool=<pool-id>
 # subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
-# yum install ansible ansible-test ansible-doc
+# yum install ansible
+
+$ git clone git@github.com:wmcdonald404/quick-ec2-instance.git
+
+$ echo <<EOF > ~/.vault-pass
+<vault-password>
+EOF 
+# nb: NEVER COMMIT TO SCM!!!
+$ mkdir -p ~/quick-ec2-instance/inventories/group_vars/all/vault
+$ ansible-vault <<EOF > ~/quick-ec2-instance/inventories/group_vars/all/vault/all.yml
+vaulted_aws_access_key: <access_key>
+vaulted_aws_secret_key: <secret_key>
+vaulted_ec2_keypair: <key_pair_name>
+EOF
+$ ansible-vault encrypt ~/quick-ec2-instance/inventories/group_vars/all/vault/all.yml
+# nb: PREVIOUS STEP CONSIDERED QUICK AND DIRTY. vault create <filename> && vault edit <filename> is more correct.
+
+$ . ./local/python/tox/py3-ansible29/bin/activate
+$ cd quick-ec2-instance/
+$ ansible-playbook ./playbooks/create-x86-ec2-instances.yml -e '{ "ec2_instance_tag": { "name": "rhel8" } }'
 ```
 
 ## What the What?
@@ -29,137 +48,8 @@ My initial plan was to try and use the EPEL python3-tox and keep things packaged
 
 As an alternative, we can create a manual venv, pip-install tox into this, then bootstrap the rest of the venv(s).
 
-## High-level Steps
-### RHEL8
-1. Create a clean rhel8 ec2 instance.
-2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-3. Register the machine with Red Hat Subscription Manager
-7. Enable the repository and install Ansible Engine
-5. Create a venv.
-6. Pip install tox.
-7. Bootstrap the tox environment.
-99. Ansible all the things.
-
-## Detailed-level Steps
-1. Create a clean rhel8 ec2 instance.
-2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-```
-# yum -y install python3 python3-virtualenv python3-devel git gcc
-```
-6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
-```
-# subscription-manager register
-Registering to: subscription.rhsm.redhat.com:443/subscription
-Username: <username>
-Password: <password>
-# subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
-# subscription-manager attach --pool=<pool-id>
-```
-7. Enable the repository and install Ansible Engine
-```
-# subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
-# yum install ansible ansible-test ansible-doc
-```
-3. Create and `activate` a venv.
-```
-$ python3 -m venv .tox-venv
-$ . .tox-venv/bin/activate
-(.tox-venv) $ 
-```
-4. Pip install tox. Note this is installing into the `active` venv.
-```
-(.tox-venv) $ pip install tox
-```
-5. Bootstrap the tox environment.
-```
-$ git clone https://github.com/lshake/bootstrap_ansible
-```
-8. Build the Tox testing venvs
-```
-$ git clone https://github.com/lshake/bootstrap_ansible
-$ ./bootstrap_ansible/build.sh
-```
-
-
-10. Export a portable venv
-
-
-
-99. Exit the venv.
-$ deactivate
-
-
-### RHEL7 
-1. Create a clean rhel7 ec2 instance.
-2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-3. Register the machine with Red Hat Subscription Manager
-7. Enable the repository and install Ansible Engine
-5. Create a venv.
-6. Pip install tox.
-7. Bootstrap the tox environment.
-99. Ansible all the things.
-
-## Detailed-level Steps
-
-# yum -y install python-virtualenv git gcc
-$ python -m virtualenv .tox-venv
-$ . .tox-venv/bin/activate
-(.tox-venv) $ pip install tox
-$ git cl
-
-
-
-
-1. Create a clean rhel8 ec2 instance.
-2. Install a (non-platform) Python 3 and pre-requisite dev tools, Python 3 devel & virtualenv, Git and GCC.
-```
-# yum -y install python3 python3-virtualenv python3-devel git gcc
-```
-6. Register the machine with Red Hat Subscription Manager and enable the Ansible Engine repository.
-```
-# subscription-manager register
-Registering to: subscription.rhsm.redhat.com:443/subscription
-Username: <username>
-Password: <password>
-# subscription-manager list --available --matches 'Red Hat Ansible Engine' --matches 'Employee SKU'
-# subscription-manager attach --pool=<pool-id>
-```
-7. Enable the repository and install Ansible Engine
-```
-# subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
-# yum install ansible ansible-test ansible-doc
-```
-3. Create and `activate` a venv.
-```
-$ python3 -m venv .tox-venv
-$ . .tox-venv/bin/activate
-(.tox-venv) $ 
-```
-4. Pip install tox. Note this is installing into the `active` venv.
-```
-(.tox-venv) $ pip install tox
-```
-5. Bootstrap the tox environment.
-```
-$ git clone https://github.com/lshake/bootstrap_ansible
-```
-8. Build the Tox testing venvs
-```
-```
-
-9. Create the Python venv(s)
-
-10. Export a portable venv
-
-
-
-99. Exit the venv.
-$ deactivate
-
-
 ## Notes / Follow-up
 RHEL8: python 3.6.8 & ansible 2.9
-
 
 TODO:
 
@@ -193,3 +83,13 @@ deps =
   ansible29
 
 ## Notes / Foll
+
+Playbooks failing with `"target uses selinux but python bindings (libselinux-python) aren't installed!"` which appears to be down to: https://github.com/ansible-community/molecule/issues/1724
+
+This can possibly be mitigated via tox --sitepackages (update Lee's build.sh and re-run.)
+
+```
+You are using pip version 9.0.3, however version 20.2.3 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+```
+
