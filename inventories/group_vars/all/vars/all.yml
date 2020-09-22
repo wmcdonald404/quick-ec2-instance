@@ -6,7 +6,8 @@ ec2_url: https://ec2.amazonaws.com
 ec2_x86_rhel7_image: ami-0e12cbde3e77cbb98
 ec2_x86_rhel8_image: ami-08f4717d06813bf00
 ec2_x86_instance_type: t2.micro
-ec2_arm_image: ami-0b5171a7b859ff1b4
+ec2_arm_rhel7_image: ami-0b5171a7b859ff1b4
+# ec2_arm_rhel7_image: ami-0b5171a7b859ff1b4
 ec2_arm_instance_type: a1.medium
 ec2_region: eu-west-1
 ec2_group: default
