@@ -83,10 +83,9 @@ deps =
   ansible29
 
 ## Notes / Foll
-
 Playbooks failing with `"target uses selinux but python bindings (libselinux-python) aren't installed!"` which appears to be down to: https://github.com/ansible-community/molecule/issues/1724
 
-This can possibly be mitigated via tox --sitepackages (update Lee's build.sh and re-run.)
+This can possibly be mitigated via tox --sitepackages (updated Lee's build.sh and re-run.)
 
 ```
 You are using pip version 9.0.3, however version 20.2.3 is available.
