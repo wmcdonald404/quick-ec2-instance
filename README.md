@@ -23,13 +23,12 @@ The instructions and playbooks in this repository:
 │           └── vault
 │               └── all.yml
 ├── playbooks
-│   ├── create-arm-ec2-instances.yml
 │   ├── create-default-infrastructure.yml
 │   ├── create-ec2-instances.yml
 │   ├── create-specific-infrastructure.yml
-│   ├── create-x86-ec2-instances.yml
 │   ├── debug-infrastructure.yml
 │   ├── destroy-ec2-instances.yml
+│   ├── install-common-prequisites.yml
 │   └── templates
 │       ├── config.j2
 │       └── credentials.j2
@@ -41,12 +40,12 @@ The instructions and playbooks in this repository:
 - `inventories/group_vars/all/vault/all.yml`: sensitive inventory group vars for AWS and RHSM
 - `playbooks/create-default-infrastructure.yml`: idempotently create a default AWS VPC 
 - `playbooks/create-specific-infrastructure.yml`: idempotently create specific VPN with explicit subnets, security groups, internet gateways and routing tables
-- `playbooks/create-x86-ec2-instances.yml`: create x86_64 EC2 instance(s)
-- `playbooks/create-arm-ec2-instances.yml`: create arm EC2 instance(s)
+- `playbooks/create-ec2-instances.yml`: create EC2 instance(s)
 - `playbooks/destroy-ec2-instances.yml`: destroy the EC2 instance(s)
 - `playbooks/debug-infrastructure.yml`: debug output from VPC facts
+- `playbooks/install-common-prequisites.yml`: install prerequisites Boto and awscli
 
-## Variables
+## Variables: TODO update these
 
 - `ec2_x86_image`: AMI image ID to provision EC2 instances from (default ami-0e12cbde3e77cbb98) 
 - `ec2_region`: AWS region to create VPC/provision instances (default: eu-west-1)
@@ -61,7 +60,7 @@ $ git clone git@github.com:wmcdonald404/quick-ec2-instance.git ~/quick-ec2-insta
 ```
 2. Define your AWS access_key, secret_key and keypair variables in a vault file
 
-Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml is effectively a layer of redirection so that there is a plain-text copy of the variable name to aid troubleshooting/tracing.
+Note: vault/all.yml will contain the vaulted/encrypted values.  vars/all.yml contains a layer of redirection so that there is a plain-text copy of the variable name to aid troubleshooting/tracing.
 
 ```
 $ mkdir -p ~/quick-ec2-instance/inventories/group_vars/all/{vars,vault}
@@ -91,9 +90,14 @@ ec2_instance_tag:
   name: satellite
 ```
 
-6. Create AWS default VPC infrastructure
+6. Install the prerequisites:
 ```
 $ cd ~/quick-ec2-instance
+$ ansible-playbook ~/quick-ec2-instance/playbooks/install-common-prequisites.yml
+```
+
+6. Create AWS default VPC infrastructure
+```
 $ ansible-playbook ~/quick-ec2-instance/playbooks/create-default-infrastructure.yml
 ```
 7. Refresh the inventory cache (just in case this is an iteration run and a previous instance has been cached)

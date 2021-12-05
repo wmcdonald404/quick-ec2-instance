@@ -1,0 +1,48 @@
+---
+# plays/install-common-prequisites.yml
+# 
+# Install the common prerequisite bits
+
+- name: install common prerequisites for plays
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: install the boto and botocore on the control node
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3-boto3
+        - python3-botocore
+      when: ansible_facts['distribution'] == "Fedora"
+      become: true
+
+    - name: install the awscli on the control node
+      package:
+        name: awscli
+        state: present
+      when: ansible_facts['distribution'] == "Fedora"
+      become: true
+
+    - name: create a config directory for awscli
+      file:
+        path: ~/.aws/
+        state: directory
+        mode: 0700
+
+    - name: configure defaults for awscli from group_vars
+      template:
+        src: "{{ item }}.j2"
+        dest: "~/.aws/{{ item }}"
+        mode: 0600
+      with_items:
+        - config
+        - credentials
+
+# - name: Show facts available on the system
+#   ansible.builtin.debug:
+#     var: ansible_facts
+
+# vim:sw=2:ts=2:et
