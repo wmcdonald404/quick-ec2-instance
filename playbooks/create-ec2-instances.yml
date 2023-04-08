@@ -40,33 +40,31 @@
       register: ec2_vpc_subnet_info
     
     - name: provision ec2 sandbox instance(s)
-      ec2:
-        assign_public_ip: yes
-        count_tag: "{{ ec2_instance_tag }}"
+      amazon.aws.ec2_instance:
         exact_count: "{{ ec2_instance_count }}"
-        groups: "{{ ec2_group }}"
         key_name: "{{ ec2_keypair }}"
-        image: "{{ ec2_image }}"
-        instance_tags: "{{ ec2_instance_tag }}"
+        image_id: "{{ ec2_image }}"
+        tags: "{{ ec2_instance_tag }}"
         instance_type: "{{ ec2_instance_type }}"
+        network:
+          assign_public_ip: true
         region: "{{ ec2_region }}"
+        security_group: "{{ ec2_group }}"
         volumes:
           - device_name: /dev/sda1
-            delete_on_termination: true
-            volume_type: gp2
-            volume_size: 60
-            # - device_name: /dev/sdb
-            #   delete_on_termination: true
-            #   volume_type: gp2
-            #   volume_size: 10
+            ebs:
+              delete_on_termination: true
+              volume_type: gp2
+              volume_size: 60
         vpc_subnet_id: "{{ ec2_vpc_subnet_info.subnets[0].subnet_id }}"
         wait: true
       register: ec2
 
     - name: sandbox instance hostname(s)
-      debug:
-        var: item.dns_name
-      loop: "{{ ec2.tagged_instances }}"
+      ansible.builtin.debug:
+        var: ec2.instances
+        # var: item.instances
+      #loop: "{{ ec2 }}"
 
 # vim:sw=2:ts=2:et
 

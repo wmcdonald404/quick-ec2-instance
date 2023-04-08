@@ -9,12 +9,12 @@
 
   tasks:
     - name: destroy ec2 instances
-      ec2:
-        count_tag: "{{ ec2_instance_tag }}"
-        instance_ids: "{{ hostvars[inventory_hostname].ec2_id }}"
-        region: "{{ ec2_region }}"
+      amazon.aws.ec2_instance:
+        # instance_ids: "{{ hostvars[inventory_hostname].instance_id }}"
+        # region: "{{ ec2_region }}"
         state: absent
-      register: ec2
+        filters:
+          tag:name: demo
 
 # vim:sw=2:ts=2:et
 
