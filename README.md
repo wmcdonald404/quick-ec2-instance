@@ -87,7 +87,7 @@ $ vi ~/quick-ec2-instance/inventories/group_vars/all/vars/all.yml
 
 ec2_instance_count: 1
 ec2_instance_tag:
-  name: satellite
+  name: awstest
 ```
 
 6. Install the prerequisites:
